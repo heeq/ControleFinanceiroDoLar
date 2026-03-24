@@ -1,0 +1,152 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: #cdcdcd;
+  font-family: Verdana, Tahoma, Arial;
+
+}
+
+.btn {
+  cursor: pointer;
+}
+
+.message {
+  font-weight: bold;
+}
+
+.message .normal {
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.top-nav {
+    margin: 10px 20px;
+    background-color: gray;
+    border-radius: 10px;
+    padding: 8px 4px;
+/*    position: relative;
+    z-index: 9999;*/
+}
+
+
+.top-nav a {
+  text-decoration: none;
+  color: white;
+  margin: 5px;
+}
+
+.top-nav .item-holder * {
+  margin-left: 15px;
+}
+
+    .top-nav .item-holder span {
+        cursor: pointer;
+    }
+
+    .top-nav .item-holder a {
+        border: 2px solid white;
+        border-radius: 8px;
+        padding: 3px 4px; /* espaço interno */
+    }
+
+    .top-nav .item-holder a:hover {
+        border-color: red;
+    }
+
+.page {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+input {
+  margin-top: 9px;
+  margin-bottom: 5px;
+}
+
+ol,
+ul {
+  line-height: 30px;
+}
+
+.register-page-wrapper,
+.login-page-wrapper {
+    position: relative; /* ou remova o position */
+    min-height: 100vh; /* ocupa a tela toda */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.register-page,
+.login-page {
+  background: #ffffff;
+  width: 40%;
+  max-width: 300px;
+  min-width: 200px;
+  padding: 10px;
+  box-shadow: 0 0 3px 5px gray;
+}
+
+input[type='submit'] {
+  background: green;
+  color: #ffff;
+  padding: 5px 10px;
+  width: 100px;
+  border-radius: 5px;
+  border: none;
+}
+
+
+input[type='submit']:hover {
+  background: rgb(14, 166, 14);
+  color: #ffff;
+  padding: 5px 10px;
+  width: 100px;
+  border-radius: 5px;
+  border: none;
+}
+
+input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+}
+
+table,
+tr,
+td,
+th {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+td,
+th {
+  padding: 5px 10px;
+}
+
+.my-5 {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.waiting-page {
+  position: fixed;
+  top: 25%;
+  left: 25%;
+  right: 25%;
+  bottom: 25%;
+  width: 50%;
+  height: 50%;
+  box-shadow: 0 0 3px 5px gray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  background-color: black;
+}
+
+.waiting-page div {
+  text-align: center;
+  font-weight: bold;
+  font-size: 30px;
+}

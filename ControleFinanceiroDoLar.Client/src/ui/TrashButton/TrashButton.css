@@ -1,0 +1,31 @@
+@import "@radix-ui/colors/red.css";
+
+.iconButton {
+    all: unset; /* opcional: reset estilo do botão */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--mauve-12);
+}
+
+    .iconButton:hover {
+        background: var(--mauve-3);
+    }
+
+    .iconButton:focus-visible {
+        outline: 2px solid var(--violet-7);
+        outline-offset: 2px;
+    }
+
+    .iconButton.danger {
+        color: var(--red-11);
+    }
+
+        .iconButton.danger:hover {
+            background: var(--red-6);
+        }

@@ -1,0 +1,300 @@
+@import '@radix-ui/colors/gray.css';
+
+@import '@radix-ui/themes/styles.css';
+
+@import "@radix-ui/colors/black-alpha.css";
+@import "@radix-ui/colors/mauve.css";
+@import "@radix-ui/colors/red.css";
+@import "@radix-ui/colors/violet.css";
+/* tamanho das colunas da tabela */
+.tasksTable {
+    width: 100%;
+    table-layout: fixed; /* importante */
+}
+
+    .tasksTable .colNum {
+        width: 50px;
+        text-align: center;
+        align-items: center;
+    }
+    /* 1ª coluna pequena */
+    .tasksTable .colTask {
+        width: auto;
+    }
+    /* ocupa o que sobrar */
+    .tasksTable .colStatus {
+        width: 150px;
+    }
+
+    /* ocupa o que sobrar */
+    .tasksTable .colAction {
+        width: 60px;
+        text-align: center;
+        align-items: center;
+    }
+/* ajuste conforme quiser */
+
+/* Efeito quando muda a datalist nav tabela */
+
+.tasksWrap {
+    position: relative;
+}
+
+    /* Esmaece só a tabela (assim o overlay não fica “apagado” junto) */
+    .tasksWrap table {
+        transition: opacity .2s ease;
+    }
+
+    .tasksWrap.isLoading table {
+        opacity: .6;
+    }
+
+
+/* Estilos do botao */
+.taskAdd {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+    .taskAdd input {
+        flex: 1 1 auto; /* cresce e ocupa o espaço */
+        min-width: 0;
+    }
+
+    .taskAdd button {
+        flex: 0 0 auto; /* não cresce */
+        white-space: nowrap; /* não quebra o texto do botão */
+    }
+
+/* Overlay SEM display:none (para permitir transição) */
+.loadingOverlay {
+    position: absolute;
+    inset: 0;
+    display: flex; /* sempre flex */
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 12px;
+    background: rgba(255,255,255,.55);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .2s ease, visibility .2s ease;
+}
+
+.tasksWrap.isLoading .loadingOverlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+.page {
+    max-width: 1100px;
+    margin: 0 auto; /* centraliza o bloco na tela */
+}
+
+    .page h1 {
+        text-align: center; /* centraliza o texto do h1 */
+    }
+
+.layout-colunas {
+    display: flex;
+    gap: 30px;
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto; /* centraliza o bloco na página */
+
+    justify-content: center; /* mantém o conjunto centralizado */
+    align-items: flex-start; /* alinha as colunas pelo topo */
+    flex-wrap: nowrap; /* não deixa quebrar em 2 linhas */
+}
+
+.coluna {
+    padding: 10px;
+    background: #f0f0f0;
+    min-width: 0; /* evita a tabela “forçar” e quebrar o flex */
+}
+
+.coluna-1 {
+    overflow-x: auto;
+}
+
+.coluna-1 table {
+    width: 100%;
+    table-layout: fixed; /* ESSENCIAL: impede a largura variar pelo conteúdo */
+    border-collapse: collapse;
+}
+
+.coluna-1 th,
+.coluna-1 td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; /* não quebra linha -> mantém altura constante */
+}
+
+.coluna-1 input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.coluna-2 {
+    flex: 0 0 auto; /* não estica */
+    display: flex;
+    align-items: flex-start;
+}
+
+    .coluna-2 .rdp-root {
+        width: fit-content; /* encolhe pro tamanho do conteúdo */
+        margin: 0;
+    }
+
+
+
+
+/* Define um "quadro" fixo para a tabela */
+.tasksWrap {
+    position: relative;
+    width: 100%;
+    height: 220px; /* FIXO: ajuste para o tamanho que você quer */
+    overflow: auto; /* rolagem vertical e horizontal se precisar */
+    background: #f0f0f0; /* opcional */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* reset */
+button {
+    all: unset;
+}
+
+.AlertDialogOverlay {
+    background-color: var(--black-a9);
+    position: fixed;
+    inset: 0;
+    animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.AlertDialogContent {
+    background-color: var(--gray-1);
+    border-radius: 6px;
+    box-shadow: var(--shadow-6);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90vw;
+    max-width: 500px;
+    max-height: 85vh;
+    padding: 25px;
+    animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+    .AlertDialogContent:focus {
+        outline: none;
+    }
+
+.AlertDialogTitle {
+    margin: 0;
+    color: var(--mauve-12);
+    font-size: 17px;
+    font-weight: 500;
+}
+
+.AlertDialogDescription {
+    margin-bottom: 20px;
+    color: var(--mauve-11);
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.Button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    padding: 0 15px;
+    font-size: 15px;
+    line-height: 1;
+    font-weight: 500;
+    height: 35px;
+    user-select: none;
+}
+
+    .Button:focus:not(:focus-visible) {
+        outline: 0;
+    }
+
+    .Button:focus-visible {
+        outline: 2px solid var(--violet-6);
+        outline-offset: 1px;
+    }
+
+    .Button.violet {
+        background-color: var(--violet-4);
+        color: var(--violet-12);
+        outline-color: var(--violet-6);
+    }
+
+        .Button.violet:hover {
+            background-color: var(--mauve-3);
+        }
+
+    .Button.red {
+        background-color: var(--red-4);
+        color: var(--red-11);
+        outline-color: var(--red-7);
+    }
+
+        .Button.red:hover {
+            background-color: var(--red-5);
+        }
+
+    .Button.mauve {
+        background-color: var(--mauve-4);
+        color: var(--mauve-11);
+        outline-color: var(--mauve-7);
+    }
+
+        .Button.mauve:hover {
+            background-color: var(--mauve-5);
+        }
+
+@keyframes overlayShow {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes contentShow {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -48%) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}

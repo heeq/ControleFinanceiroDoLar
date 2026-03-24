@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="ControleFinanceiroDoLar.Server.Api.Tests/ControleFinanceiroDoLar.Server.IntegrationTests.csproj" Id="cb00d64f-0d3b-46aa-b40f-1ee3b94bbc25" />
+  <Project Path="ControleFinanceiroDoLar.Client/ControleFinanceiroDoLar.Client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="ControleFinanceiroDoLar.Server/ControleFinanceiroDoLar.Server.csproj" />
+</Solution>
