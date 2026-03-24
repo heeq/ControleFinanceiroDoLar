@@ -1,0 +1,33 @@
+.container {
+    max-width: 400px;
+    margin: 40px auto;
+    font-family: Arial, sans-serif;
+}
+
+h2 {
+    margin-bottom: 15px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+select,
+input,
+button {
+    padding: 8px;
+    font-size: 14px;
+}
+
+button {
+    background-color: #0d3b66;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+    button:hover {
+        opacity: 0.9;
+    }

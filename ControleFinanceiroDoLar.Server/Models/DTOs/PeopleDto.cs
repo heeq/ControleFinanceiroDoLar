@@ -1,11 +1,11 @@
 ﻿namespace ControleFinanceiroDoLar.Server.Models.DTOs
 {
-    public class CategoryDto 
+    public class PeopleDto
     {
         public Guid id { get; init; }
 
-        public string description { get; init; }
+        public string name { get; init; }
 
-        public CategoryPurpose purpose { get; init; }
+        public int age { get; init; }
     }
 }

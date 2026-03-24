@@ -1,11 +1,11 @@
 ﻿namespace ControleFinanceiroDoLar.Server.Models.DTOs
 {
-    public class PeopleDto // DTO segue o padrão JSONIFICADO, com camel case
+    public class CategoryDto 
     {
         public Guid id { get; init; }
 
-        public string name { get; init; }
+        public string description { get; init; }
 
-        public int age { get; init; }
+        public CategoryPurpose purpose { get; init; }
     }
 }

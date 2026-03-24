@@ -8,14 +8,13 @@ export function TrashButton({
     onClick = () => { },
     disabled = false,
     isLucideIcon = false,
-    title = "Excluir"
+    title = "Excluir",
 }) {
     return (
         <button
             type="button"
             onClick={onClick}
             disabled={disabled}
-            aria-label="Excluir, botão"
             title={title}
             className="iconButton danger"
         >

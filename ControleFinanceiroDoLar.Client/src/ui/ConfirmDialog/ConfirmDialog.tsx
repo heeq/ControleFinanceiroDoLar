@@ -1,5 +1,16 @@
-import React from "react";
+import { ReactNode } from "react";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
+
+interface ConfirmDialogProps {
+    trigger: ReactNode;
+    title?: ReactNode;
+    description?: ReactNode;
+    cancelText?: string;
+    confirmText?: string;
+    onConfirm: () => void;
+    disabled?: boolean;
+    isLoading?: boolean;
+}
 
 export function ConfirmDialog({
     trigger,
@@ -10,7 +21,7 @@ export function ConfirmDialog({
     onConfirm,
     disabled = false,
     isLoading = false,
-}) {
+}: ConfirmDialogProps) {
     return (
         <AlertDialog.Root>
             <AlertDialog.Trigger asChild>

@@ -1,6 +1,9 @@
 {
   "devDependencies": {
-    "@vitejs/plugin-basic-ssl": "^2.1.0"
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-basic-ssl": "^2.1.0",
+    "typescript": "^6.0.2"
   },
   "dependencies": {
     "@radix-ui/colors": "^3.0.0",

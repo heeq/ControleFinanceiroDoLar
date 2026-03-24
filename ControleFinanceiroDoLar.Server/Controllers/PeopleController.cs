@@ -17,7 +17,7 @@ public class PeopleController(IPeopleService peopleService, ApplicationDbContext
 
     // POST /api/people body: { "name": "Henrique", "age": "35" }
     [HttpPost]
-    public async Task<ActionResult<UserDailyTaskDto>> Create([FromBody] CreatePeopleRequest req, CancellationToken ct)
+    public async Task<ActionResult<PeopleDto>> Create([FromBody] CreatePeopleRequest req, CancellationToken ct)
     {
         try
         {
