@@ -3,7 +3,7 @@
 Sistema de controle de gastos residenciais
 
 # Instalacao
-- Pre-requisito:: .NET 8 SDK + Node.js
+- Pre-requisito: .NET 8 SDK + Node.js
 
 - Frontend: primeiramente instalar dependencias (via bash no diretorio do repositorio)
   - cd ControleFinanceiroDoLar.Client
@@ -11,10 +11,11 @@ Sistema de controle de gastos residenciais
   
 - Backend: utilizar bash no diretorio do repositorio
   - cd ControleFinanceiroDoLar.Server
-  - dotnet run
+  - dotnet run --urls "https://localhost:44331"
+  - É essencial que seja executado assim para carregar a API na url correta
   - API disponível em https://localhost:44331
   - (documentação swagger: https://localhost:44331/swagger)
-  - O frontend estará disponível em https://localhost:5173/ 
+  - O frontend irá abrir automaticamente e estará disponível em https://localhost:5173/ 
   
 - Testes de integração
   - cd ControleFinanceiroDoLar.Server.Api.Tests
