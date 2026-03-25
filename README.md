@@ -4,25 +4,22 @@ Sistema de controle de gastos residenciais
 
 # Instalacao
 - Pre-requisito:: .NET 8 SDK + Node.js
+
+- Frontend: primeiramente instalar dependencias (via bash no diretorio do repositorio)
+  - cd ControleFinanceiroDoLar.Client
+  - npm install @vitejs/plugin-basic-ssl @radix-ui/react-alert-dialog @radix-ui/react-icons @radix-ui/themes @radix-ui/colors lucide-react prop-types
+  
 - Backend: utilizar bash no diretorio do repositorio
   - cd ControleFinanceiroDoLar.Server
-  - dotnet restore
-  - dotnet ef database update
   - dotnet run
   - API disponível em https://localhost:44331
   - (documentação swagger: https://localhost:44331/swagger)
+  - O frontend estará disponível em https://localhost:5173/ 
   
-- Frontend: utilizar bash no diretorio do repositório
-  - cd ControleFinanceiroDoLar.Client
-  - npm install
-  - npm run dev
-  - O frontend estará disponível em https://localhost:5173/
-
 - Testes de integração
   - cd ControleFinanceiroDoLar.Server.Api.Tests
   - dotnet restore
   - dotnet test
-  
 
 # Uso
 - Para facilitar, a conexão não será HTTPS, portanto terá que ir no botão Avançadas -> ir para localhost (não seguro)
