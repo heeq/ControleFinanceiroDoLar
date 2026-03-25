@@ -24,7 +24,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "APIs do Controle Financeiro do Lar",
         Version = "v1",
-        Description = "Desafio Técnico MaxiProd"
+        Description = "Desafio Técnico"
     });
 });
 
