@@ -119,7 +119,7 @@ export default function Transactions() {
         try {
 
             if (selectedPersonId === "new") {
-                const res = await fetch("/api/people", { // se tiver selecionado 'new', cria a pessoa
+                const resPeople = await fetch("/api/people", { // se tiver selecionado 'new', cria a pessoa
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -128,13 +128,15 @@ export default function Transactions() {
                     }),
                 });
 
-                const created = await res.json();
+                if (!resPeople.ok) throw new Error("Erro ao criar pessoa");
+
+                const created = await resPeople.json();
                 personId = created.id;
             }
 
 
             if (selectedCategoryId === "new") {
-                const res = await fetch("/api/category", { // se tiver new, cria a categoria
+                const resCategory = await fetch("/api/category", { // se tiver new, cria a categoria
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -143,12 +145,14 @@ export default function Transactions() {
                     }),
                 });
 
-                const created = await res.json();
+                if (!resCategory.ok) throw new Error("Erro ao criar categoria");
+
+                const created = await resCategory.json();
                 categoryId = created.id;
             }
 
             // criar transação
-            await fetch("/api/Transaction", {
+            const resTransaction = await fetch("/api/Transaction", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -159,6 +163,8 @@ export default function Transactions() {
                     categoryId,
                 }),
             });
+
+            if (!resTransaction.ok) throw new Error("Erro ao criar transação");
 
             alert("Transação criada!");
 
@@ -176,7 +182,7 @@ export default function Transactions() {
             fetchData();
         } catch (err) {
             console.error(err);
-            alert("Erro ao criar transação");
+            alert("Erro interno!");
         }
     };
 

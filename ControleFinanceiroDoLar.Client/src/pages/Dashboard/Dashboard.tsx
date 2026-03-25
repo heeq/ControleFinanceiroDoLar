@@ -138,7 +138,6 @@ export default function Dashboard() {
     return (
         <div className="content">
             <h1>Dashboard</h1>
-
             <div className="card">
                 <h2>Totais por Pessoa</h2>
                 <table>
@@ -153,10 +152,8 @@ export default function Dashboard() {
                     <tbody>
                         {peopleTotals.map((p, i) => (
                             <tr key={i}>
-
                                 <td style={{ position: "relative" }}>
                                     {p.name}
-
                                     <button
                                         style={{
                                             marginLeft: 8,
@@ -176,10 +173,7 @@ export default function Dashboard() {
                                         }}
                                         onMouseEnter={() => setHoveredId(p.id)}
                                         onMouseLeave={() => setHoveredId(null)}
-                                    >
-                                        i
-                                    </button>
-
+                                    >i</button>
                                     {hoveredId === p.id && (
                                         <div
                                             style={{
@@ -210,8 +204,7 @@ export default function Dashboard() {
                                         </div>
                                     )}
                                 </td>
-
-                                <td className="income">R$ {p.income.toFixed(2)}</td> {/*para mostrar decimal*/}
+                                <td className="income">R$ {p.income.toFixed(2)}</td>
                                 <td className="expense">R$ {p.expense.toFixed(2)}</td>
                                 <td className="balance">R$ {p.balance.toFixed(2)}</td>
                             </tr>
