@@ -1,17 +1,14 @@
 @import '@radix-ui/colors/gray.css';
-
 @import '@radix-ui/themes/styles.css';
-
 @import "@radix-ui/colors/black-alpha.css";
 @import "@radix-ui/colors/mauve.css";
 @import "@radix-ui/colors/red.css";
 @import "@radix-ui/colors/violet.css";
 
 
-.dashboard {
+.content {
     padding: 24px;
     font-family: Arial, sans-serif;
-    background-color: #f5f7fa;
 }
 
 h1 {
@@ -28,8 +25,6 @@ h2 {
     padding: 16px;
     margin-bottom: 24px;
     border-radius: 8px;
-    border-left: 6px solid #f4b400; /* amarelo mostarda */
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 table {

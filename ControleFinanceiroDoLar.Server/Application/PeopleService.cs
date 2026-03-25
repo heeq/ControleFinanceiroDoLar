@@ -47,12 +47,22 @@ public class PeopleService(ApplicationDbContext db) : IPeopleService
 
     public async Task<IReadOnlyList<PeopleDto>> ListAsync(string? name, int? age, CancellationToken ct = default)
     {
-        return await _db.Individual
-            .AsNoTracking()
-            .Where(x =>
-                (string.IsNullOrWhiteSpace(name) || x.Name.ToLower().Contains(name.ToLower())) && (!age.HasValue || x.Age == age.Value))
+        var query = _db.Individual.AsNoTracking().AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(name))
+            query = query.Where(x => x.Name.ToLower().Contains(name.ToLower()));
+
+        if (age.HasValue)
+            query = query.Where(x => x.Age == age.Value);
+
+        return await query
             .OrderBy(x => x.Name)
-            .Select(x => new PeopleDto { id = x.Id, name = x.Name, age = x.Age })
+            .Select(x => new PeopleDto
+            {
+                id = x.Id,
+                name = x.Name,
+                age = x.Age
+            })
             .ToListAsync(ct);
     }
 

@@ -84,7 +84,7 @@ public class PeopleController(IPeopleService peopleService, ApplicationDbContext
 
 
 
-    // DELETE /api/people/{id} .  Body: { "name": "Henrique", "age": "35" }
+    // PATCH /api/people/{id} .  Body: { "name": "Henrique", "age": "35" }
     [HttpPatch("{id:guid}")]
     public async Task<ActionResult<PeopleDto>> Update(Guid id, [FromBody] UpdatePeopleRequest req, CancellationToken ct)
     {
@@ -110,7 +110,7 @@ public class PeopleController(IPeopleService peopleService, ApplicationDbContext
     }
 
 
-
+    // AQUI VAI DELETAR AS TRANSACOES ASSOCIADAS ATRAVES DO DELETEBEHAVIOUR.CASCADE NO APPDBCONTEXT
     // DELETE /api/people/{id}
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken ct)

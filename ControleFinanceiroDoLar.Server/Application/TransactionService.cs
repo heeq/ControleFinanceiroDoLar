@@ -24,6 +24,9 @@ public class TransactionService(ApplicationDbContext db) : ITransactionService
 
         req.Description = description; // com Trim()
 
+        if (req.Type == TransactionType.Income && req.Amount <= 0)
+            throw new ArgumentException("Valor da receita deve ser maior que zero.");
+
         var newTransaction = new Transaction
         {
             Description = req.Description,
@@ -50,15 +53,28 @@ public class TransactionService(ApplicationDbContext db) : ITransactionService
 
     public async Task<IReadOnlyList<TransactionDto>> ListAsync(Guid? peopleId, string? description, TransactionType? type, CancellationToken ct = default)
     {
-        return await _db.Transactions
-            .AsNoTracking()
-            .Where(x =>
-                (x.PeopleId == peopleId || 
-                (string.IsNullOrWhiteSpace(description) || x.Description.ToLower().Contains(description.ToLower())) ||
-                (!type.HasValue || x.Type == type.Value)))
+        var query = _db.Transactions.AsNoTracking().AsQueryable();
+
+        if (peopleId.HasValue)
+            query = query.Where(x => x.PeopleId == peopleId.Value);
+
+        if (!string.IsNullOrWhiteSpace(description))
+            query = query.Where(x => x.Description.ToLower().Contains(description.ToLower()));
+
+        if (type.HasValue)
+            query = query.Where(x => x.Type == type.Value);
+
+        return await query
             .OrderBy(x => x.Description)
-            .Select(x => new TransactionDto { id = x.Id, description = x.Description, type = x.Type, amount = x.Amount, 
-                                                categoryId = x.CategoryId, peopleId = x.PeopleId })
+            .Select(x => new TransactionDto
+            {
+                id = x.Id,
+                description = x.Description,
+                type = x.Type,
+                amount = x.Amount,
+                categoryId = x.CategoryId,
+                peopleId = x.PeopleId
+            })
             .ToListAsync(ct);
     }
 

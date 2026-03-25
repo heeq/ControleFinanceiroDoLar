@@ -42,13 +42,22 @@ public class CategoryService(ApplicationDbContext db) : ICategoryService
 
     public async Task<IReadOnlyList<CategoryDto>> ListAsync(string? description, CategoryPurpose? purpose, CancellationToken ct = default)
     {
-        return await _db.Categories
-            .AsNoTracking()
-            .Where(x =>
-                (string.IsNullOrWhiteSpace(description) || x.Description.ToLower().Contains(description.ToLower())) &&
-                    (!purpose.HasValue || x.Purpose == purpose.Value))
+        var query = _db.Categories.AsNoTracking().AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(description))
+            query = query.Where(x => x.Description.ToLower().Contains(description.ToLower()));
+
+        if (purpose.HasValue)
+            query = query.Where(x => x.Purpose == purpose.Value);
+
+        return await query
             .OrderBy(x => x.Description)
-            .Select(x => new CategoryDto { id = x.Id, description = x.Description, purpose = x.Purpose })
+            .Select(x => new CategoryDto
+            {
+                id = x.Id,
+                description = x.Description,
+                purpose = x.Purpose
+            })
             .ToListAsync(ct);
     }
 

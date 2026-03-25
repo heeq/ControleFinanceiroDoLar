@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState } from "react";
 import "./TransactionsPage.css";
 import { ConfirmDialog } from '../../ui/ConfirmDialog/ConfirmDialog.jsx';
 import { TrashButton } from '../../ui/TrashButton/TrashButton.jsx';
-import * as AlertDialog from "@radix-ui/react-alert-dialog";
 
 type Person = {
     id: string;
@@ -26,10 +25,11 @@ export default function Transactions() {
 
     const [selectedCategoryId, setSelectedCategoryId] = useState<string | "new">("");
     const [newCategoryName, setNewCategoryName] = useState("");
+    const [newCategoryPurpose, setNewCategoryPurpose] = useState<"Income" | "Expense" | "Both">("Expense");
 
     const [description, setDescription] = useState("");
     const [amount, setAmount] = useState<number>(0);
-    const [type, setType] = useState<"income" | "expense">("expense");
+    const [type, setType] = useState<"Income" | "Expense">("Expense");
 
     const selectPeopleRef = useRef<HTMLSelectElement>(null);
     function getSelectedPeopleText() {
@@ -40,42 +40,86 @@ export default function Transactions() {
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, []); // só roda uma vez (montagem do componente)
 
     const fetchData = async () => {
-        const [p, c] = await Promise.all([
-            fetch("/api/people/listAll").then((r) => r.json()),
-            fetch("/api/category/listAll").then((r) => r.json()),
-        ]);
+        try {
 
-        setPeople(p);
-        setCategories(c);
+            const [peopleResult, categoriesResult] = await Promise.all([
+                fetch("/api/people/listAll"),
+                fetch("/api/category/listAll"),
+            ]);
+
+            if (!peopleResult.ok) throw new Error("Erro ao carregar pessoas.");
+            if (!categoriesResult.ok) throw new Error("Erro ao carregar categorias.");
+
+            const [peopleResponse, categoriesResponse] = await Promise.all([
+                peopleResult.json(),
+                categoriesResult.json(),
+            ]);
+
+            setPeople(peopleResponse);
+            setCategories(categoriesResponse);
+        } catch (err) {
+            const msg = err instanceof Error
+                ? err.message
+                : String(err);
+
+            throw new Error("Erro ao carregar dados: " + msg);
+        }
     };
 
     const getSelectedPersonAge = () => {
         if (selectedPersonId === "new") return newPersonAge;
 
         const person = people.find((p) => p.id === selectedPersonId);
-        return person?.age || 0;
+        return person?.age || 200;
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        if (!selectedPersonId) {
+            alert("Selecione uma pessoa antes de continuar.");
+            return;
+        }
+        if (!selectedCategoryId) {
+            alert("Selecione uma categoria antes de continuar.");
+            return;
+        }
+
         let personId = selectedPersonId;
         let categoryId = selectedCategoryId;
 
-        // 🔴 REGRA MENOR DE IDADE
-        const age = getSelectedPersonAge();
-        if (age < 18 && type === "income") {
-            alert("Menor de idade só pode ter despesas.");
+
+        // validar se categoria cabe no tipo de transacao
+        if (selectedCategoryId !== "new") {
+            const selectedCategory = categories.find(c => c.id === selectedCategoryId);
+
+            if (!selectedCategory) {
+                alert("Categoria inválida.");
+                return;
+            }
+
+            const purpose = selectedCategory.purpose; // Income, Expense ou Both
+
+            if (purpose !== "Both" && purpose !== type) {
+                alert(`Categoria do tipo ${purpose} não permite transações do tipo ${type}.`);
+                return;
+            }
+        }
+
+
+        const age = getSelectedPersonAge()
+        if (age < 18 && type === "Income") {
+            alert("Menor de idade só pode ter despesas."); /*  triste =(  */
             return;
         }
 
         try {
-            // criar pessoa se necessário
+
             if (selectedPersonId === "new") {
-                const res = await fetch("/api/people", {
+                const res = await fetch("/api/people", { // se tiver selecionado 'new', cria a pessoa
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -88,13 +132,14 @@ export default function Transactions() {
                 personId = created.id;
             }
 
-            // criar categoria se necessário
+
             if (selectedCategoryId === "new") {
-                const res = await fetch("/api/categories", {
+                const res = await fetch("/api/category", { // se tiver new, cria a categoria
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        name: newCategoryName,
+                        Description: newCategoryName,
+                        Purpose: newCategoryPurpose
                     }),
                 });
 
@@ -103,24 +148,30 @@ export default function Transactions() {
             }
 
             // criar transação
-            await fetch("/api/transactions", {
+            await fetch("/api/Transaction", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     description,
                     amount,
                     type,
-                    personId,
+                    PeopleId: personId,
                     categoryId,
                 }),
             });
 
             alert("Transação criada!");
 
-            // reset simples
+            // voltando para valores default
+            setSelectedPersonId(""); // esse aqui talvez pudesse ser bom deixar
+            setSelectedCategoryId("");
+            setNewPersonName("");
+            setNewPersonAge(0);
+            setNewCategoryName("");
+            setNewCategoryPurpose("Expense");
             setDescription("");
             setAmount(0);
-            setType("expense");
+            setType("Expense");
 
             fetchData();
         } catch (err) {
@@ -130,17 +181,21 @@ export default function Transactions() {
     };
 
 
-    const [successOpen, setSuccessOpen] = useState(false);
+    const handleTrashButtonClick = () => {
+        if (!selectedPersonId) {
+            alert("Selecione uma pessoa para excluir.");
+            return;
+        }
+    }
 
     async function onPeopleDelete(id: string) {
         if (!id) return;
-        
+
         try {
             const res = await fetch(`/api/people/${id}`, { method: "DELETE" });
 
             if (!res.ok) {
                 let msg = `Falha ao excluir (HTTP ${res.status})`;
-
                 try {
                     const contentType = res.headers.get("content-type") || "";
                     if (contentType.includes("application/json")) {
@@ -151,159 +206,147 @@ export default function Transactions() {
                         if (text) msg = text;
                     }
                 } catch { }
-
                 throw new Error(msg);
             }
-            setSuccessOpen(true);
+            else {
+                alert("Excluido com Sucesso!");
+            }
+        } catch (e) {
 
-        } catch (e: any) {
-            console.log("Erro inesperado");
+        } finally {
         }
     }
 
     return (
-        <>
-            <AlertDialog.Root open={successOpen} onOpenChange={(v) => {
-                setSuccessOpen(v);
-                if (!v) window.location.reload(); // atualiza página ao fechar
-            }}>
-                <AlertDialog.Portal>
-                    <AlertDialog.Overlay className="AlertDialogOverlay" />
-                    <AlertDialog.Content className="AlertDialogContent">
-                        <AlertDialog.Title>Excluído!</AlertDialog.Title>
-                        <AlertDialog.Description>
-                            O registro foi removido com sucesso.
-                        </AlertDialog.Description>
-                        <AlertDialog.Action asChild>
-                            <button className="Button blue">OK</button>
-                        </AlertDialog.Action>
-                    </AlertDialog.Content>
-                </AlertDialog.Portal>
-            </AlertDialog.Root>
+        <div className="content">
+            <h1>Transações</h1>
 
-            <AlertDialog.Root open="{!!errorMessage}" onOpenChange={(v) => !v && setErrorMessage("")}>
-                <AlertDialog.Portal>
-                    <AlertDialog.Overlay className="AlertDialogOverlay" />
-                    <AlertDialog.Content className="AlertDialogContent">
-                        <AlertDialog.Title>Falha ao excluir</AlertDialog.Title>
-                        <AlertDialog.Description>
-                            "Erro ao excluir usuário""
-                        </AlertDialog.Description>
-                        <AlertDialog.Action asChild>
-                            <button className="Button red">OK</button>
-                        </AlertDialog.Action>
-                    </AlertDialog.Content>
-                </AlertDialog.Portal>
-            </AlertDialog.Root>
-        </>
-    );
-}
+            <div className="container">
+                <h2>Nova Transação</h2>
 
-    return (
-        <div className="container">
-            <h2>Nova Transação</h2>
+                <form onSubmit={handleSubmit}>
+                    <label>Pessoa</label>
+                    <div>
+                        <select
+                            ref={selectPeopleRef}
+                            value={selectedPersonId}
+                            onChange={(e) =>
+                                setSelectedPersonId(
+                                    e.target.value === "new" ? "new" : e.target.value
+                                )}>
+                            <option value="">Selecione</option>
+                            {people.map((p) => (
+                                <option key={p.id} value={p.id}>
+                                    {p.name} ({p.age})
+                                </option>
+                            ))}
+                            <option value="new">Novo usuário</option>
+                        </select>
 
-            <form onSubmit={handleSubmit}>
-                {/* PESSOA */}
+                        {selectedPersonId ? (
+                            <ConfirmDialog
+                                trigger={<TrashButton title="Excluir Indivíduo" isLucideIcon />}
+                                title="Você tem certeza?"
+                                description={
+                                    <>
+                                        Essa ação não poderá ser desfeita. Isso apagará o indivíduo e todas as suas transações associadas:
+                                        <br />
+                                        <br />
+                                        <strong>{getSelectedPeopleText()}</strong>
+                                    </>
+                                }
+                                confirmText="Sim, Deletar Indivíduo"
+                                onConfirm={() => onPeopleDelete(selectedPersonId)}
+                            />
+                        ) : (
+                        <TrashButton
+                            title="Excluir Indivíduo"
+                            isLucideIcon
+                            onClick={() => alert("Selecione uma pessoa para excluir.")}
+                        />
+                        )}
 
-                <label>Pessoa</label>
-                <div>
+                    </div>
+
+                    {selectedPersonId === "new" && (
+                        <>
+                            <input
+                                placeholder="Nome"
+                                value={newPersonName}
+                                onChange={(e) => setNewPersonName(e.target.value)}
+                            />
+                            <input
+                                type="number"
+                                placeholder="Idade"
+                                onChange={(e) => setNewPersonAge(Number(e.target.value))}
+                            />
+                        </>
+                    )}
+
+                    <label>Categoria</label>
                     <select
-                        ref={selectPeopleRef}
-                        value={selectedPersonId}
+                        value={selectedCategoryId}
                         onChange={(e) =>
-                            setSelectedPersonId(
+                            setSelectedCategoryId(
                                 e.target.value === "new" ? "new" : e.target.value
                             )
-                        }>
+                        }
+                    >
                         <option value="">Selecione</option>
-                        {people.map((p) => (
-                            <option key={p.id} value={p.id}>
-                                {p.name} ({p.age})
+                        {categories.map((c) => (
+                            <option key={c.id} value={c.id}>
+                                {c.purpose === 'Income' && '(Receita) '}
+                                {c.purpose === 'Expense' && '(Despesa) '}
+                                {c.purpose === 'Both' && '(Ambos) '}
+                                {c.description}
                             </option>
                         ))}
-                        <option value="new">Novo usuário</option>
+                        <option value="new">Nova categoria</option>
                     </select>
 
-                    <ConfirmDialog
-                        trigger={<TrashButton title="Excluir Indivíduo" isLucideIcon />}
-                        title="Você tem certeza?"
-                        description={
-                            <>
-                                Essa ação não poderá ser desfeita. Isso apagará o indivíduo e todas as suas transações associadas:
-                                <br />
-                                <br />
-                                <strong>{getSelectedPeopleText()}</strong>
-                            </>
-                        }
-                        confirmText="Sim, Deletar Indivíduo"
-                        onConfirm={() => onPeopleDelete(selectedPersonId)}
-                    />
+                    {selectedCategoryId === "new" && (
+                        <>
+                            <input
+                                placeholder="Nome da categoria"
+                                value={newCategoryName}
+                                onChange={(e) => setNewCategoryName(e.target.value)}
+                            />
 
-                </div>
+                            <label>Tipo da categoria</label>
+                            <select
+                                value={newCategoryPurpose}
+                                onChange={(e) => setNewCategoryPurpose(e.target.value as any)}
+                            >
+                                <option value="Income">Receita</option>
+                                <option value="Expense">Despesa</option>
+                                <option value="Both">Ambos</option>
+                            </select>
+                        </>
+                    )}
 
-                {selectedPersonId === "new" && (
-                    <>
-                        <input
-                            placeholder="Nome"
-                            value={newPersonName}
-                            onChange={(e) => setNewPersonName(e.target.value)}
-                        />
-                        <input
-                            type="number"
-                            placeholder="Idade"
-                            onChange={(e) => setNewPersonAge(Number(e.target.value))}
-                        />
-                    </>
-                )}
-
-                {/* CATEGORIA */}
-                <label>Categoria</label>
-                <select
-                    value={selectedCategoryId}
-                    onChange={(e) =>
-                        setSelectedCategoryId(
-                            e.target.value === "new" ? "new" : e.target.value
-                        )
-                    }
-                >
-                    <option value="">Selecione</option>
-                    {categories.map((c) => (
-                        <option key={c.id} value={c.id}>
-                            {c.description}
-                        </option>
-                    ))}
-                    <option value="new">Nova categoria</option>
-                </select>
-
-                {selectedCategoryId === "new" && (
                     <input
-                        placeholder="Nome da categoria"
-                        value={newCategoryName}
-                        onChange={(e) => setNewCategoryName(e.target.value)}
+                        placeholder="Descrição"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                     />
-                )}
 
-                {/* DADOS DA TRANSAÇÃO */}
-                <input
-                    placeholder="Descrição"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
+                    <label>Valor</label>
+                    <input style={{ marginTop: '0px' }}
+                        type="number"
+                        placeholder="Valor"
+                        value={amount}
+                        onChange={(e) => setAmount(Number(e.target.value))}
+                    />
 
-                <input
-                    type="number"
-                    placeholder="Valor"
-                    onChange={(e) => setAmount(Number(e.target.value))}
-                />
+                    <label>Tipo da transação</label>
+                    <select value={type} onChange={(e) => setType(e.target.value as any)}>
+                        <option value="Expense">Despesa</option>
+                        <option value="Income">Receita</option>
+                    </select>
 
-                <select value={type} onChange={(e) => setType(e.target.value as any)}>
-                    <option value="expense">Despesa</option>
-                    <option value="income">Receita</option>
-                </select>
-
-                <button type="submit">Adicionar</button>
-            </form>
+                    <button type="submit">Adicionar</button>
+                </form>
+            </div>
         </div>
     );
 }
