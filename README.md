@@ -3,25 +3,25 @@
 Sistema de controle de gastos residenciais
 
 # Instalacao
-- Pre-requisito:: .net 8sdk, Node.js
+- Pre-requisito:: .NET 8 SDK + Node.js
 - Backend: utilizar bash no diretorio do repositorio
-  cd ControleFinanceiroDoLar.Server
-  dotnet restore
-  dotnet ef database update
-  dotnet run
-  API disponível em https://localhost:44331
-  (documentação swagger: https://localhost:44331/swagger)
+  - cd ControleFinanceiroDoLar.Server
+  - dotnet restore
+  - dotnet ef database update
+  - dotnet run
+  - API disponível em https://localhost:44331
+  - (documentação swagger: https://localhost:44331/swagger)
   
 - Frontend: utilizar bash no diretorio do repositório
-  cd ControleFinanceiroDoLar.Client
-  npm install
-  npm run dev
-  O frontend estará disponível em https://localhost:5173/
+  - cd ControleFinanceiroDoLar.Client
+  - npm install
+  - npm run dev
+  - O frontend estará disponível em https://localhost:5173/
 
 - Testes de integração
-  cd ControleFinanceiroDoLar.Server.Api.Tests
-  dotnet restore
-  dotnet test
+  - cd ControleFinanceiroDoLar.Server.Api.Tests
+  - dotnet restore
+  - dotnet test
   
 
 # Uso
@@ -34,14 +34,15 @@ Sistema de controle de gastos residenciais
 # Tecnologias
 
 Backend: 
- -ASP.NET CORE (.net 8)
- -Entity Framework Core
- -SqLite
+- ASP.NET CORE (.net 8)
+- Entity Framework Core
+- SqLite
+ 
 
-Teste:
--xUnit
+Testes:
+- xUnit
  
 Frontend:
- - React + Vite
- - Typescript
- - Radix + Lucide
+- React + Vite
+- Typescript
+- Radix + Lucide
