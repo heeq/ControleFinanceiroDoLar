@@ -28,6 +28,7 @@ Sistema de controle de gastos residenciais
 - No menu Transações, é possível criar uma nova pessoa, apagar pessoa, criar categoria (escolhendo entre despesa, receita e ambos)
   O valor da transação pode ser negativo ou positivo em despesas não interferindo no somatório
 - Caso deseje zerar o banco basta apagar o arquivo "\ControleFinanceiroDoLar.Server\controlefinanceiro.db"
+  E RODAR dotnet ef database update (antes do dotnet run --urls .....)
 
 # Tecnologias
 
